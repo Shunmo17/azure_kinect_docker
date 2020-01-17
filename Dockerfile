@@ -93,7 +93,7 @@ RUN	/bin/bash -c "source /opt/ros/melodic/setup.bash; catkin init" && \
     echo "source /catkin_build.bash" >> ~/.bashrc
 
 ##############################################################################
-##                                 for GUI                                  ##
+##                          for using nvidia gpu                            ##
 ##############################################################################
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -158,12 +158,12 @@ RUN /install_azure_kinect_sdk.sh
 ##                             terminal setting                             ##
 ##############################################################################
 
-RUN echo "export PS1='\[\e[1;33;40m\]DOCKER AZURE_KINECT\[\e[0m\] \u:\w\$ '">> ~/.bashrc
+RUN echo "export PS1='\[\e[1;33;40m\]AZURE_KINECT\[\e[0m\] \u:\w\$ '">> ~/.bashrc
 
 ##############################################################################
 ##                            setting ros master                            ##
 ##############################################################################
-# ROS MATER setting
+# ROS MASTER setting
 ENV CLIENT_IP 192.168.1.221
 ENV MASTER_IP 192.168.1.200
 
