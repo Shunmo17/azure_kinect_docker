@@ -71,7 +71,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # setup entrypoint
-COPY ./packages/ros_entrypoint.sh /
+COPY ./include/ros_entrypoint.sh /
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
@@ -87,7 +87,7 @@ RUN apt-get update && apt-get install -y \
     python-catkin-tools
 
 WORKDIR /home/catkin_ws
-COPY ./packages/catkin_build.bash /
+COPY ./include/catkin_build.bash /
 RUN	/bin/bash -c "source /opt/ros/melodic/setup.bash; catkin init" && \
     echo "source /home/catkin_ws/devel/setup.bash" >> ~/.bashrc && \
     echo "source /catkin_build.bash" >> ~/.bashrc
@@ -95,7 +95,6 @@ RUN	/bin/bash -c "source /opt/ros/melodic/setup.bash; catkin init" && \
 ##############################################################################
 ##                          for using nvidia gpu                            ##
 ##############################################################################
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config \
         libxau-dev \

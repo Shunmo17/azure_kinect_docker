@@ -1,8 +1,6 @@
 ## Description
 
-Azure KinectをROS上で動かすためのDockerです。
-
-
+This is Docker for Azure Kinect DK with ROS.
 
 ## Docker
 
@@ -13,7 +11,7 @@ ubuntu:18.04
 
 melodic
 
-### common tools
+### installed tools
 * iproute2
 * iputils-ping
 * net-tools
