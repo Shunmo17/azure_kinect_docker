@@ -141,17 +141,16 @@ RUN apt-get update && apt-get install -y \
 ##############################################################################
 ##                           azure kinect install                           ##
 ##############################################################################
-# register Microsoft repository
-RUN apt install -y curl software-properties-common
+## register Microsoft repository
+RUN apt update && apt install -y \
+    curl \
+    software-properties-common
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN apt-get update
 RUN apt-add-repository https://packages.microsoft.com/ubuntu/18.04/prod
 
-# prepare
-RUN apt-get update && apt-get install -y expect
-COPY ./packages/install_azure_kinect_sdk.sh /install_azure_kinect_sdk.sh
-
-# install azure kinect sdk
+## install azure kinect sdk
+COPY /include/install_azure_kinect_sdk.sh /install_azure_kinect_sdk.sh
 RUN /install_azure_kinect_sdk.sh
 
 ##############################################################################
