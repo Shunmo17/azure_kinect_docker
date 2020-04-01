@@ -13,5 +13,5 @@ docker run -it \
     --env CLIENT_IP=192.168.1.55 \
     --env MASTER_IP=192.168.1.55 \
     -v "/etc/localtime:/etc/localtime:ro" \
-    -v "/$(pwd)/packages/Azure_Kinect_ROS_Driver:/home/catkin_ws/src/Azure_Kinect_ROS_Driver" \
+    -v "/$(pwd)/ros_packages/Azure_Kinect_ROS_Driver:/home/catkin_ws/src/Azure_Kinect_ROS_Driver" \
     azure_kinect:latest
