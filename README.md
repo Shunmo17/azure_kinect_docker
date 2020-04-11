@@ -24,7 +24,7 @@ melodic
 
 ## Requirement
 
-- NVIDIA GPUを搭載したPC
+- PC with NVIDIA GPU
 
 * nvidia-docker2
 
@@ -44,19 +44,18 @@ melodic
 
 ### Run
 
-1. `run.sh`のIPアドレスを設定する
+1. Set the ip address in `run.sh`
 
-   CLIENT_IP：azure_kinectを接続するPCのIPアドレス
+   CLIENT_IP：ip address of a PC connected to azure_kinect
 
-   MASTER_IP：roscoreを動かすPCのIPアドレス
+   MASTER_IP：ip address of a PC running roscore
 
-   ※1台のPCのみ使用する場合は、両方とも同じIPアドレスで設定
+   ※If you use only one PC, please set both of them the same address.
 
 2. ```
    ./run.sh
    ```
-
-   ./run.shをすると、`packages/Azure_Kinect_ROS_Driver`のROSパッケージがマウントされ、自動的にbuildされます。
+   If you run `./run.sh`, `packages/Azure_Kinect_ROS_Driver` will be mounted to the docker, and catkin build will be run automatically.
 
 
 3. ```
