@@ -140,30 +140,91 @@ RUN apt-get update && apt-get install -y \
 ##############################################################################
 ##                           azure kinect install                           ##
 ##############################################################################
+# azure kinect
 ## register Microsoft repository
 RUN apt update && apt install -y \
     curl \
     software-properties-common
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN apt-get update
+RUN apt update
 RUN apt-add-repository https://packages.microsoft.com/ubuntu/18.04/prod
 
-## install azure kinect sdk
-COPY /include/install_azure_kinect_sdk.sh /install_azure_kinect_sdk.sh
-RUN /install_azure_kinect_sdk.sh
+RUN apt update && apt install -y \
+    ninja-build \
+    doxygen \
+    clang \
+    gcc-multilib-arm-linux-gnueabihf \
+    g++-multilib-arm-linux-gnueabihf && \
+   rm -rf /var/lib/apt/lists/*
+
+RUN apt update && apt install -y \
+    freeglut3-dev \
+    libgl1-mesa-dev \
+    mesa-common-dev \
+    libsoundio-dev \
+    libvulkan-dev \
+    libxcursor-dev \
+    libxinerama-dev \
+    libxrandr-dev \
+    uuid-dev \
+    libsdl2-dev \
+    usbutils \
+    libusb-1.0-0-dev \
+    openssl \
+    libssl-dev \
+    wget \
+    git  && \
+    rm -rf /var/lib/apt/lists/*
+
+# update cmake
+WORKDIR /
+RUN wget https://cmake.org/files/v3.16/cmake-3.16.5.tar.gz  -O cmake-3.16.5.tar.gz
+RUN tar -zxvf cmake-3.16.5.tar.gz
+WORKDIR /cmake-3.16.5
+
+RUN ./bootstrap
+RUN make
+RUN make install
+
+RUN apt update && apt install -y \
+    g++ \
+    perl
+
+# install azure kinect sdk
+WORKDIR /
+RUN apt-get update && apt-get install -y \
+    zip \
+    unzip && \
+   rm -rf /var/lib/apt/lists/*
+RUN wget https://www.nuget.org/api/v2/package/Microsoft.Azure.Kinect.Sensor/1.4.0 -O microsoft.azure.kinect.sensor.1.4.0.nupkg
+RUN mv microsoft.azure.kinect.sensor.1.4.0.nupkg  microsoft.azure.kinect.sensor.1.4.0.zip
+RUN unzip -d microsoft.azure.kinect.sensor.1.4.0 microsoft.azure.kinect.sensor.1.4.0.zip
+
+
+WORKDIR /home
+
+RUN git clone https://github.com/microsoft/Azure-Kinect-Sensor-SDK.git
+RUN mkdir -p /home/Azure-Kinect-Sensor-SDK/build/bin/
+RUN cp /microsoft.azure.kinect.sensor.1.4.0/linux/lib/native/x64/release/libdepthengine.so.2.0 /home/Azure-Kinect-Sensor-SDK/build/bin/libdepthengine.so.2.0
+RUN cp /microsoft.azure.kinect.sensor.1.4.0/linux/lib/native/x64/release/libdepthengine.so.2.0 /lib/x86_64-linux-gnu/
+RUN cp /microsoft.azure.kinect.sensor.1.4.0/linux/lib/native/x64/release/libdepthengine.so.2.0 /usr/lib/x86_64-linux-gnu/
+RUN chmod a+rwx /usr/lib/x86_64-linux-gnu
+RUN chmod a+rwx -R /lib/x86_64-linux-gnu/
+RUN chmod a+rwx -R /home/Azure-Kinect-Sensor-SDK/build/bin/
+
+RUN cd /home/Azure-Kinect-Sensor-SDK &&\
+    mkdir -p build && \
+    cd build &&\
+    cmake .. -GNinja &&\
+    ninja &&\
+    ninja install
+
+RUN mkdir -p /etc/udev/rules.d/
+RUN cp /home/Azure-Kinect-Sensor-SDK/scripts/99-k4a.rules /etc/udev/rules.d/99-k4a.rules
+RUN chmod a+rwx /etc/udev/rules.d
 
 ##############################################################################
 ##                             terminal setting                             ##
 ##############################################################################
 
 RUN echo "export PS1='\[\e[1;33;40m\]AZURE_KINECT\[\e[0m\] \u:\w\$ '">> ~/.bashrc
-
-##############################################################################
-##                            setting ros master                            ##
-##############################################################################
-# ROS MASTER setting
-ENV CLIENT_IP 192.168.1.221
-ENV MASTER_IP 192.168.1.200
-
-RUN echo 'export ROS_IP=${CLIENT_IP}' >> ~/.bashrc && \
-    echo 'export ROS_MASTER_URI=http://${MASTER_IP}:11311' >> ~/.bashrc
